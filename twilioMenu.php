@@ -40,14 +40,15 @@ function noResponseMsg($order_id){
     global $TWIL_ACC_SID;
 	global $TWIL_TOKEN;
     global $TWIL_NUM;
+    global $SQL_MSG2;
 
 
     $orderRecord = getSID();
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
 
-	#$sqlMes = $SQL_MSG2.$orderRecord.'"';
-    #$result = $wpdb->get_results($sqlMes, "ARRAY_A");
+	$sqlMes = $SQL_MSG2.$orderRecord.'"';
+    $result = $wpdb->get_results($sqlMes, "ARRAY_A");
 
 	try {
 		$message = $client->messages->create("102", array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
