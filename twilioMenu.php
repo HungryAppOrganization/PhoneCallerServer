@@ -36,25 +36,26 @@ function logTwil($str){
 }
 
 function noResponseMsg($order_id){
+	logTwil("No response.....");
     global $TWIL_ACC_SID;
 	global $TWIL_TOKEN;
     global $TWIL_NUM;
 
 
-    $orderRecord = getSID();
+    #$orderRecord = getSID();
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
 
-	$sqlMes = $SQL_MSG2.$orderRecord.'"';
-    $result = $wpdb->get_results($sqlMes, "ARRAY_A");
+	#$sqlMes = $SQL_MSG2.$orderRecord.'"';
+    #$result = $wpdb->get_results($sqlMes, "ARRAY_A");
 
 	try {
-		$message = $client->messages->create($result[0]["cus_num"], array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
+		$message = $client->messages->create("102", array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
 		logTwil("Restaurant no response: Order- ".$order_id.", TwilioSid- ". $message->sid);
 	} 
 	catch (Exception $e) {
 		logTwil("Restaurant no response message error: " . $e->getMessage());
-		logTwil("Restaurant no response message error texting: " . $result[0]["cus_num"]);
+		#logTwil("Restaurant no response message error texting: " . $result[0]["cus_num"]);
 	}
 }
 
@@ -77,9 +78,10 @@ if ($_REQUEST['Digits'] == 1){
 elseif ($_REQUEST['Digits'] == 99){
 	// initial instruction will repeat twice, if no response then taken as voicemail and hangs up
 	if ($count >= 1){
-		echo '<Response><Hangup/></Response>';
+		
 		$wpdb->update($STAT, array($STAT_count => ++$count), array($STAT_tsid => $_REQUEST['CallSid']));
 		noResponseMsg($order);
+		echo '<Response><Hangup/></Response>';
 		die();
 	}
 	else{
