@@ -42,7 +42,7 @@ function noResponseMsg($order_id){
     global $TWIL_NUM;
 
 
-    #$orderRecord = getSID();
+    $orderRecord = getSID();
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
 
