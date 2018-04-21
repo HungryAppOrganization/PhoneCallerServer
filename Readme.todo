@@ -1,0 +1,24 @@
+Edits to make to twilio:
+	Give automated text if it was not picked up or any options were chosen. 
+
+	Ensure they can prepare it.
+		Ask if can pick up or not. 
+
+
+
+Folder:
+
+ssh hungryServer
+./opt/bitnami/apps/wordpress/htdocs/wp-content/themes/twentyseventeen-child/checkVM.php
+
+
+Logs:
+	~/apps/wordpress/htdocs/wp-content/uploads/twilio/log
+
+
+
+
+Estimated time:
+    3 if the rest does not do delivery
+    4 if they did not pick up/other error.
+    

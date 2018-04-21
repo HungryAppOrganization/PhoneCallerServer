@@ -13,6 +13,17 @@ global $wpdb;
 
 chdir($ROOT_LOC);
 
+function getSID(){
+    global $wpdb;
+	global $STAT;
+    global $STAT_id;
+	global $STAT_tsid;
+    
+    $sql = 'SELECT '.$STAT_id.' FROM '.$STAT.' WHERE '.$STAT_tsid.' = "'.$_REQUEST['CallSid'].'"';
+    $result = $wpdb->get_results($sql, "ARRAY_A");
+    return $result[0][$STAT_id];
+}
+
 function logTwil($str){
 	global $LOG;
 	//time at utc +0
@@ -28,17 +39,25 @@ function noResponseMsg($order_id){
     global $TWIL_ACC_SID;
 	global $TWIL_TOKEN;
     global $TWIL_NUM;
+
+
+    $orderRecord = getSID();
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
 
+	$sqlMes = $SQL_MSG2.$orderRecord.'"';
+    $result = $wpdb->get_results($sqlMes, "ARRAY_A");
+
 	try {
-		$message = $client->messages->create("+18034791475", array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
+		$message = $client->messages->create($result[0]["cus_num"], array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
 		logTwil("Restaurant no response: Order- ".$order_id.", TwilioSid- ". $message->sid);
 	} 
 	catch (Exception $e) {
 		logTwil("Restaurant no response message error: " . $e->getMessage());
+		logTwil("Restaurant no response message error texting: " . $result[0]["cus_num"]);
 	}
 }
+
 
 $sql = 'SELECT '.$STAT_id.', '.$STAT_count.' FROM '.$STAT.' WHERE '.$STAT_tsid.' = "'.$_REQUEST['CallSid'].'"';
 $result = $wpdb->get_results($sql, "ARRAY_A");
@@ -68,7 +87,16 @@ elseif ($_REQUEST['Digits'] == 99){
 	}
 	$order= substr($order, 0,15).'.xml';
 }
-else {
+elseif ($_REQUEST['Digits'] == 3) {
+	echo '<Response><Hangup/></Response>';
+	$wpdb->update($STAT, array($STAT_count => ++$count), array($STAT_tsid => $_REQUEST['CallSid']));
+	noResponseMsg($order);
+	die();
+
+} elseif ($_REQUEST['Digits'] == 4) {
+
+
+} else {
     // repeat initial message
     $order= substr($order, 0,15).'.xml';
 }
