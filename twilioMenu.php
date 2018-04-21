@@ -45,6 +45,8 @@ function noResponseMsg($order_id){
 
 
     $orderRecord = getSID();
+
+    logTwil("Order record: " . $orderRecord);
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
 
