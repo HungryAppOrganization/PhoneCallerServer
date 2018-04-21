@@ -75,6 +75,7 @@ if (is_null($order)){
 header('content-type: text/xml');
 if ($_REQUEST['Digits'] == 1){
     // continue to say menu
+    logTwil("Responded with a 1");
     $order= substr($order, 0,15).'Menu.xml';
 }
 elseif ($_REQUEST['Digits'] == 99){
