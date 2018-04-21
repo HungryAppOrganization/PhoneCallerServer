@@ -49,10 +49,11 @@ function noResponseMsg($order_id){
     logTwil("Order record: " . $orderRecord);
 	
 	$client = new Client($TWIL_ACC_SID, $TWIL_TOKEN);
-
+	logTwil("beyond client...");
 	$sqlMes = $SQL_MSG2.$orderRecord.'"';
+	logTwil("sql message: " . $SQL_MSG2);
     $result = $wpdbb->get_results($sqlMes, "ARRAY_A");
-
+    logTwil("Final result...");
 	try {
 		$message = $client->messages->create("102", array('From' => $TWIL_NUM, 'Body' => "Restaurant gave no response for order ".$order_id."."));
 		logTwil("Restaurant no response: Order- ".$order_id.", TwilioSid- ". $message->sid);
