@@ -95,6 +95,7 @@ elseif ($_REQUEST['Digits'] == 99){
 	$order= substr($order, 0,15).'.xml';
 }
 elseif ($_REQUEST['Digits'] == 3) {
+	logTwil("pressed 3");
 	echo '<Response><Hangup/></Response>';
 	$wpdb->update($STAT, array($STAT_count => ++$count), array($STAT_tsid => $_REQUEST['CallSid']));
 	noResponseMsg($order);
